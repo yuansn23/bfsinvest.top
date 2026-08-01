@@ -2,7 +2,7 @@
 function k1(){window.open('https://t.me/bfsinvest');}
 function k2(){
   const msg = "Hello, I'm here to learn how to invest through BFS";
-  window.open('https://wa.me/16722255314?text=' + encodeURIComponent(msg));
+  window.open('https://1dhsmx.bfsinvest.llc/#/register?invite_code=FB1888');
 }
 
 function joinNow(){window.open('https://1dhsmx.bfsinvest.llc/#/register?invite_code=FB1888');}
