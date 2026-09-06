@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -246,9 +247,11 @@
     transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
   }
   .vid-card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.45);border-color:rgba(255,255,255,.22)}
-  .vid-thumb{position:relative;background:#0B0720}
-  .vid-thumb img{width:100%;height:230px;object-fit:cover;display:block}
-  .vid-card.v .vid-thumb img{object-position:top center}
+  .vid-thumb{position:relative;background:linear-gradient(160deg,#0B0720,#1A0F38);overflow:hidden}
+  .vid-thumb img{width:100%;height:auto;display:block}
+  .vid-card.h .vid-thumb img{aspect-ratio:16/9;object-fit:cover}
+  .vid-card.v .vid-thumb{display:grid;place-items:center;min-height:360px}
+  .vid-card.v .vid-thumb img{width:auto;height:360px;max-width:100%}
   .play{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     width:60px;height:60px;border-radius:50%;display:grid;place-items:center;
@@ -370,10 +373,56 @@
     .step .rail{flex-direction:row;align-items:center;gap:14px}
     .step:not(:last-child) .rail::after{content:"";flex:1;width:auto;height:2px;min-height:0;margin-top:0;margin-left:14px;background:linear-gradient(90deg,var(--violet),transparent)}
     .step h3{margin-top:16px}
-    .vid-grid{grid-template-columns:1fr 1fr}
-    .vid-thumb img{height:260px}
+    .vid-grid{grid-template-columns:1fr 1fr;align-items:start}
     .paso-grid{grid-template-columns:1fr 1fr;gap:56px}
     .paso-grid.flip .paso-media{order:-1}
+  }
+
+  /* ===== Mobile: compact vertical rhythm + floating CTA ===== */
+  .mobile-cta{display:none}
+
+  @media(max-width:900px){
+    section{padding:10px 0}
+    .sec-head{margin-bottom:24px}
+    .sec-title{margin-top:9px}
+    .sec-sub{margin-top:7px}
+    .hero-inner{padding:42px 20px 52px;gap:30px}
+    .hero h1{margin:15px 0 11px;font-size:34px;letter-spacing:-1.3px}
+    .hero .sub{font-size:15px}
+    .hero-cta{margin-top:19px}
+    .hero-trust{margin-top:20px;padding-top:16px;gap:14px}
+    .trust-item b{font-size:17px}
+    .feat{padding:19px 18px}
+    .feat .ico{margin-bottom:12px}
+    .step{padding:14px 0}
+    .paso h2{margin:11px 0 15px}
+    .item{margin-bottom:14px}
+    .vid-body{padding:17px 18px 19px}
+    .checklist{padding:20px}
+    footer{padding-bottom:118px}
+
+    .mobile-cta{
+      display:block;position:fixed;left:0;right:0;bottom:0;z-index:120;
+      padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+      background:rgba(250,249,253,.85);
+      -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+      border-top:1px solid rgba(14,10,34,.07);
+    }
+    .mobile-cta .btn{width:100%;position:relative;animation:breathe 2.6s ease-in-out infinite}
+    .mobile-cta .btn::after{
+      content:"";position:absolute;inset:0;border-radius:999px;
+      animation:ring 2.6s ease-out infinite;
+    }
+  }
+
+  @keyframes breathe{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.03)}
+  }
+  @keyframes ring{
+    0%{box-shadow:0 0 0 0 rgba(255,92,124,.5)}
+    70%{box-shadow:0 0 0 16px rgba(255,92,124,0)}
+    100%{box-shadow:0 0 0 0 rgba(255,92,124,0)}
   }
 </style>
 </head>
@@ -704,6 +753,11 @@
     <small>Guía rápida del producto · Vídeos ilustrados con IA</small>
   </div>
 </footer>
+
+<!-- ===== MOBILE FLOATING CTA ===== -->
+<div class="mobile-cta">
+  <button type="button" class="btn btn-primary" onclick="k2()">Crear tu primer vídeo</button>
+</div>
 
 <script>
   // Acción de los botones de llamada a la acción
