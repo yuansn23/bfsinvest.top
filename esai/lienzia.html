@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0E0A22">
+<meta name="description" content="Lienzia — Aplicación móvil para crear vídeos ilustrados con inteligencia artificial. Convierte un tema en un vídeo con narración, subtítulos y música.">
+<title>Lienzia · Vídeos ilustrados con IA</title>
+<style>
+  :root{
+    --ink:#0E0A22;
+    --ink-2:#3A3552;
+    --muted:#6E6A87;
+    --faint:#9B97B3;
+    --bg:#FAF9FD;
+    --surface:#FFFFFF;
+    --line:#ECE9F5;
+    --line-soft:#F3F1FA;
+    --violet:#6C4DF6;
+    --violet-deep:#5537DE;
+    --violet-soft:#F1EDFF;
+    --coral:#FF5C7C;
+    --coral-deep:#EF4266;
+    --coral-soft:#FFEFF3;
+    --amber:#FFB84D;
+    --mint:#2ED3A8;
+    --dark:#0E0A22;
+    --dark-2:#171234;
+    --r-lg:22px;
+    --r-md:16px;
+    --r-sm:12px;
+    --sh-sm:0 1px 2px rgba(14,10,34,.04),0 4px 16px rgba(14,10,34,.06);
+    --sh-md:0 2px 4px rgba(14,10,34,.05),0 12px 32px rgba(14,10,34,.10);
+    --sh-lg:0 8px 16px rgba(14,10,34,.06),0 28px 64px rgba(14,10,34,.16);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    font-feature-settings:"ss01" on,"cv01" on;
+  }
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .wrap-narrow{max-width:860px;margin:0 auto;padding:0 24px}
+
+  /* ===== Buttons (CTA → k2) ===== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    font-weight:600;font-size:15.5px;letter-spacing:-.1px;line-height:1;
+    padding:15px 28px;border-radius:999px;
+    transition:transform .16s ease,box-shadow .16s ease,background .16s ease,filter .16s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn svg{width:17px;height:17px}
+  .btn-primary{
+    color:#fff;background:linear-gradient(135deg,var(--coral) 0%,#FF7A5C 100%);
+    box-shadow:0 8px 22px rgba(255,92,124,.34),inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(255,92,124,.42),inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn-violet{
+    color:#fff;background:linear-gradient(135deg,var(--violet) 0%,#8A5BFF 100%);
+    box-shadow:0 8px 22px rgba(108,77,246,.32),inset 0 1px 0 rgba(255,255,255,.22);
+  }
+  .btn-violet:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(108,77,246,.42),inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn-ghost-dark{
+    color:#fff;background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);
+  }
+  .btn-ghost-dark:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+  .btn-ghost-light{
+    color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);box-shadow:var(--sh-sm);
+  }
+  .btn-ghost-light:hover{border-color:#D9D3EC;background:#fff}
+  .btn-sm{padding:11px 20px;font-size:14px}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    position:sticky;top:0;z-index:60;
+    background:rgba(14,10,34,.72);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;height:66px;max-width:1120px;margin:0 auto;padding:0 24px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-mark{
+    width:42px;height:42px;border-radius:11px;object-fit:contain;
+    background:#fff;padding:2px;box-shadow:0 4px 14px rgba(0,0,0,.35);
+  }
+  .brand-name{color:#fff;font-weight:700;font-size:18px;letter-spacing:-.3px;line-height:1.1}
+  .brand-sub{color:rgba(255,255,255,.5);font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;overflow:hidden;color:#fff;
+    background:
+      radial-gradient(900px 480px at 78% -10%,rgba(108,77,246,.5),transparent 60%),
+      radial-gradient(700px 420px at 0% 8%,rgba(255,92,124,.22),transparent 55%),
+      linear-gradient(165deg,#0E0A22 0%,#14102F 52%,#1A0F38 100%);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:56px 56px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,#000 40%,transparent 100%);
+            mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,#000 40%,transparent 100%);
+  }
+  .hero-inner{
+    position:relative;z-index:2;display:grid;grid-template-columns:1fr;gap:44px;
+    padding:64px 24px 76px;max-width:1120px;margin:0 auto;align-items:center;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;letter-spacing:.3px;
+    color:#E7E1FF;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+    padding:7px 14px;border-radius:999px;
+  }
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px rgba(46,211,168,.25)}
+  .hero h1{
+    font-size:clamp(38px,6vw,60px);line-height:1.05;font-weight:800;letter-spacing:-2px;
+    margin:22px 0 18px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg,#C9B8FF 0%,#FF9BB3 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .sub{font-size:17.5px;color:rgba(255,255,255,.72);max-width:520px;line-height:1.65}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .hero-trust{display:flex;flex-wrap:wrap;gap:22px;margin-top:32px;padding-top:26px;border-top:1px solid rgba(255,255,255,.1)}
+  .trust-item{display:flex;flex-direction:column;gap:2px}
+  .trust-item b{font-size:19px;font-weight:700;letter-spacing:-.4px}
+  .trust-item span{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.2px}
+
+  /* Hero visual */
+  .hero-visual{position:relative}
+  .window{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);
+    backdrop-filter:blur(6px);
+  }
+  .window-bar{display:flex;align-items:center;gap:7px;padding:12px 14px;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.1)}
+  .window-bar .dot{width:11px;height:11px;border-radius:50%}
+  .window-bar .dot.r{background:#FF5F57}.window-bar .dot.y{background:#FEBC2E}.window-bar .dot.g{background:#28C840}
+  .window-bar .url{
+    margin-left:12px;font-size:12px;color:rgba(255,255,255,.55);
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+    padding:4px 12px;border-radius:7px;letter-spacing:.2px;
+  }
+  .window img{width:100%;height:auto;display:block}
+  .float-video{
+    position:absolute;right:-10px;bottom:-26px;width:120px;
+    border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 20px 50px rgba(0,0,0,.5);transform:rotate(4deg);
+  }
+  .float-video img{width:100%;height:auto;display:block}
+  .float-chip{
+    position:absolute;left:-14px;top:-16px;display:inline-flex;align-items:center;gap:8px;
+    background:#fff;color:var(--ink);font-size:12.5px;font-weight:600;
+    padding:9px 14px;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.4);
+  }
+  .float-chip .ic{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;background:var(--mint);color:#fff}
+  .float-chip .ic svg{width:12px;height:12px}
+
+  /* ===== Sections ===== */
+  section{padding:84px 0}
+  .sec-head{margin-bottom:44px;max-width:640px}
+  .sec-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--violet);
+  }
+  .sec-eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:var(--violet)}
+  .sec-title{font-size:clamp(27px,4.6vw,38px);font-weight:800;letter-spacing:-1.2px;line-height:1.12;margin-top:14px;color:var(--ink)}
+  .sec-sub{color:var(--muted);font-size:16.5px;margin-top:12px;line-height:1.65}
+
+  /* Features */
+  .feat-grid{display:grid;grid-template-columns:1fr;gap:18px}
+  .feat{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:28px 26px;box-shadow:var(--sh-sm);position:relative;overflow:hidden;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  }
+  .feat::after{
+    content:"";position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--violet),var(--coral));opacity:0;transition:opacity .2s ease;
+  }
+  .feat:hover{transform:translateY(-4px);box-shadow:var(--sh-md);border-color:#E2DCF4}
+  .feat:hover::after{opacity:1}
+  .feat .ico{
+    width:50px;height:50px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;
+    background:var(--violet-soft);color:var(--violet);
+  }
+  .feat:nth-child(2) .ico{background:var(--coral-soft);color:var(--coral-deep)}
+  .feat:nth-child(3) .ico{background:#E4FBF5;color:#12A882}
+  .feat:nth-child(4) .ico{background:#FFF3E0;color:#E0890B}
+  .feat .ico svg{width:25px;height:25px}
+  .feat h3{font-size:17.5px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px}
+  .feat p{font-size:14.5px;color:var(--muted);line-height:1.6}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:1fr;gap:0;position:relative}
+  .step{
+    display:flex;gap:18px;padding:22px 0;position:relative;
+  }
+  .step .rail{display:flex;flex-direction:column;align-items:center}
+  .step .num{
+    flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    font-weight:700;font-size:18px;color:#fff;
+    background:linear-gradient(135deg,var(--violet),#8A5BFF);
+    box-shadow:0 6px 18px rgba(108,77,246,.35);position:relative;z-index:2;
+  }
+  .step:not(:last-child) .rail::after{
+    content:"";flex:1;width:2px;min-height:30px;background:linear-gradient(var(--violet) 0%,transparent 100%);opacity:.35;margin-top:10px;
+  }
+  .step h3{font-size:17.5px;font-weight:700;letter-spacing:-.3px;margin:6px 0 4px}
+  .step p{font-size:14.5px;color:var(--muted);max-width:480px}
+  .step .st-tag{
+    display:inline-block;margin-top:8px;font-size:11.5px;font-weight:600;letter-spacing:.3px;
+    color:var(--violet);background:var(--violet-soft);padding:4px 10px;border-radius:7px;
+  }
+  .process-note{
+    margin-top:8px;padding:18px 20px;border-radius:var(--r-md);
+    background:var(--violet-soft);border:1px solid #E3DBFF;color:var(--ink-2);font-size:14.5px;line-height:1.65;
+  }
+
+  /* Results (dark) */
+  .results{background:var(--dark);color:#fff;position:relative;overflow:hidden}
+  .results::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(700px 400px at 85% 0%,rgba(108,77,246,.25),transparent 60%);
+  }
+  .results .wrap{position:relative;z-index:2}
+  .results .sec-eyebrow{color:#B9A6FF}
+  .results .sec-eyebrow::before{background:#B9A6FF}
+  .results .sec-title{color:#fff}
+  .results .sec-sub{color:rgba(255,255,255,.62)}
+  .vid-grid{display:grid;grid-template-columns:1fr;gap:22px;margin-top:8px}
+  .vid-card{
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+    border-radius:var(--r-lg);overflow:hidden;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  }
+  .vid-card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.45);border-color:rgba(255,255,255,.22)}
+  .vid-thumb{position:relative;background:#0B0720}
+  .vid-thumb img{width:100%;height:230px;object-fit:cover;display:block}
+  .vid-card.v .vid-thumb img{object-position:top center}
+  .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:60px;height:60px;border-radius:50%;display:grid;place-items:center;
+    background:rgba(255,255,255,.94);color:var(--ink);
+    box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .2s ease;
+  }
+  .vid-card:hover .play{transform:translate(-50%,-50%) scale(1.08)}
+  .play svg{width:22px;height:22px;margin-left:3px}
+  .vid-badge{
+    position:absolute;top:14px;left:14px;font-size:11px;font-weight:600;letter-spacing:.4px;
+    background:rgba(10,8,28,.6);color:#fff;padding:6px 11px;border-radius:8px;backdrop-filter:blur(4px);
+  }
+  .vid-body{padding:22px 22px 24px}
+  .vid-body h3{font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:8px;line-height:1.3}
+  .vid-body .desc{font-size:14px;color:rgba(255,255,255,.62);margin-bottom:16px;line-height:1.6}
+  .vid-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .chip{
+    font-size:12px;font-weight:500;padding:6px 12px;border-radius:999px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:#E4DEFF;
+  }
+  .chip.acc{background:rgba(255,92,124,.14);border-color:rgba(255,92,124,.32);color:#FFC3D0}
+  .vid-inc{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--mint)}
+  .vid-inc svg{width:16px;height:16px}
+  .results-note{margin-top:24px;font-size:14px;color:rgba(255,255,255,.55);display:flex;gap:10px;align-items:flex-start;line-height:1.6}
+  .results-note svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--amber)}
+
+  /* Paso sections */
+  .paso{border-top:1px solid var(--line);background:var(--surface)}
+  .paso:nth-of-type(even){background:var(--bg)}
+  .paso-grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:center}
+  .paso-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
+    color:#fff;background:linear-gradient(135deg,var(--violet),#8A5BFF);padding:8px 15px;border-radius:999px;
+    box-shadow:0 6px 16px rgba(108,77,246,.3);
+  }
+  .paso-badge .step-n{font-weight:800}
+  .paso h2{font-size:clamp(25px,4vw,33px);font-weight:800;letter-spacing:-1px;line-height:1.12;margin:16px 0 22px;color:var(--ink)}
+  .item{display:flex;gap:16px;margin-bottom:22px}
+  .item:last-child{margin-bottom:0}
+  .item .n{
+    flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+    font-weight:700;font-size:15px;color:var(--violet);background:var(--violet-soft);margin-top:1px;
+  }
+  .item h3{font-size:16.5px;font-weight:700;letter-spacing:-.2px;margin-bottom:4px}
+  .item p{font-size:14.5px;color:var(--muted);line-height:1.62}
+
+  .shot{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+    overflow:hidden;box-shadow:var(--sh-md);
+  }
+  .shot-bar{display:flex;align-items:center;gap:6px;padding:10px 13px;background:var(--line-soft);border-bottom:1px solid var(--line)}
+  .shot-bar .dot{width:10px;height:10px;border-radius:50%}
+  .shot-bar .dot.r{background:#FF5F57}.shot-bar .dot.y{background:#FEBC2E}.shot-bar .dot.g{background:#28C840}
+  .shot img{width:100%;height:auto;display:block}
+  .shot-cap{font-size:12.5px;color:var(--faint);text-align:center;margin-top:10px}
+
+  .tip{
+    display:flex;gap:13px;margin-top:26px;padding:17px 19px;border-radius:var(--r-md);
+    background:linear-gradient(120deg,#FFF7EC,#FFF0F6);border:1px solid #F3E2D0;
+  }
+  .tip .t-ic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#FFB84D;color:#fff}
+  .tip .t-ic svg{width:18px;height:18px}
+  .tip .t-badge{font-size:12px;font-weight:700;color:#B45A00;letter-spacing:.3px}
+  .tip p{font-size:14px;color:#7A5B2E;line-height:1.6;margin-top:2px}
+
+  /* Styles */
+  .styles-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .style-tag{
+    display:flex;align-items:center;gap:11px;padding:14px 15px;border-radius:var(--r-sm);
+    background:var(--surface);border:1px solid var(--line);font-size:13.5px;font-weight:600;
+    color:var(--ink-2);transition:border-color .15s ease,transform .15s ease;
+  }
+  .style-tag:hover{border-color:#D9D2EE;transform:translateY(-1px)}
+  .style-tag .st-dot{flex:none;width:11px;height:11px;border-radius:50%;box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+
+  /* Checklist */
+  .checklist{
+    margin-top:30px;background:var(--dark);border-radius:var(--r-lg);padding:28px;color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .checklist::before{content:"";position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(108,77,246,.4),transparent 70%)}
+  .checklist h3{font-size:17px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;position:relative}
+  .checklist h3 svg{width:20px;height:20px;color:var(--amber)}
+  .checklist ul{list-style:none;display:grid;gap:12px;position:relative}
+  .checklist li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:rgba(255,255,255,.85)}
+  .checklist li svg{width:20px;height:20px;flex:none;margin-top:1px;color:var(--mint)}
+
+  /* Final CTA */
+  .cta-final{
+    background:
+      radial-gradient(700px 400px at 80% -20%,rgba(255,92,124,.35),transparent 60%),
+      radial-gradient(600px 380px at 0% 120%,rgba(108,77,246,.4),transparent 60%),
+      linear-gradient(150deg,#0E0A22,#1A1038);
+    color:#fff;text-align:center;
+  }
+  .cta-final h2{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-1.4px;line-height:1.12;margin-bottom:14px}
+  .cta-final p{color:rgba(255,255,255,.68);font-size:16.5px;max-width:480px;margin:0 auto 30px}
+  .cta-final .btn{padding:17px 38px;font-size:16.5px}
+
+  /* Footer */
+  footer{background:var(--dark);color:rgba(255,255,255,.5);padding:34px 0 44px;border-top:1px solid rgba(255,255,255,.08)}
+  .foot-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:1120px;margin:0 auto;padding:0 24px}
+  .foot-brand{display:flex;align-items:center;gap:10px}
+  .foot-brand img{width:28px;height:28px;border-radius:8px;object-fit:contain;background:#fff;padding:1px}
+  .foot-brand span{font-weight:700;color:#fff;font-size:15px}
+  footer small{font-size:12.5px}
+
+  /* Responsive */
+  @media(min-width:560px){
+    .feat-grid{grid-template-columns:1fr 1fr}
+    .styles-grid{grid-template-columns:repeat(3,1fr)}
+  }
+  @media(min-width:900px){
+    .hero-inner{grid-template-columns:1.05fr .95fr;gap:56px;padding:88px 24px 96px}
+    .feat-grid{grid-template-columns:repeat(4,1fr)}
+    .steps{grid-template-columns:repeat(4,1fr);gap:18px}
+    .step{flex-direction:column;gap:0;padding:0}
+    .step .rail{flex-direction:row;align-items:center;gap:14px}
+    .step:not(:last-child) .rail::after{content:"";flex:1;width:auto;height:2px;min-height:0;margin-top:0;margin-left:14px;background:linear-gradient(90deg,var(--violet),transparent)}
+    .step h3{margin-top:16px}
+    .vid-grid{grid-template-columns:1fr 1fr}
+    .vid-thumb img{height:260px}
+    .paso-grid{grid-template-columns:1fr 1fr;gap:56px}
+    .paso-grid.flip .paso-media{order:-1}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img class="brand-mark" src="img/logo.jpg" alt="Logo de Lienzia">
+      <div>
+        <div class="brand-name">Lienzia</div>
+        <div class="brand-sub">Guía rápida</div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" onclick="k2()">Empezar</button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <span class="badge"><span class="dot"></span> Presentación del producto</span>
+      <h1>Convierte cualquier tema en un <span class="grad">vídeo ilustrado</span></h1>
+      <p class="sub">Lienzia es una aplicación móvil para crear vídeos con inteligencia artificial: narración, subtítulos y música a partir de una idea. Revisa el guion, decide el formato, el estilo y la voz antes de generar el resultado.</p>
+      <div class="hero-cta">
+        <button type="button" class="btn btn-primary" onclick="k2()">Crear tu primer vídeo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <button type="button" class="btn btn-ghost-dark" onclick="k2()">Ver cómo funciona</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><b>4 pasos</b><span>de la idea al vídeo</span></div>
+        <div class="trust-item"><b>6 estilos</b><span>visuales distintos</span></div>
+        <div class="trust-item"><b>9:16 / 16:9</b><span>vertical y horizontal</span></div>
+        <div class="trust-item"><b>Español</b><span>voz y subtítulos</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="window">
+        <div class="window-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">lienzia.app</span>
+        </div>
+        <img src="img/paso1-guion.jpg" alt="Interfaz de Lienzia: tema, duración y guion editable">
+      </div>
+      <div class="float-video"><img src="img/video-vertical.jpg" alt="Vídeo vertical creado con Lienzia"></div>
+      <div class="float-chip">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        Vídeo listo
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FUNCIONES ===== -->
+<section id="funciones">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Funciones principales</span>
+      <h2 class="sec-title">Todo lo necesario para crear tu vídeo</h2>
+      <p class="sec-sub">Cuatro funciones pensadas para que convertir una idea en un vídeo sea rápido y sin fricciones.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <h3>Guion editable</h3>
+        <p>Genera un primer texto y permite regenerarlo o cambiarlo.</p>
+      </div>
+      <div class="feat">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".9"/><circle cx="17.5" cy="10.5" r=".9"/><circle cx="8.5" cy="7.5" r=".9"/><circle cx="6.5" cy="12.5" r=".9"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.84-.13 2.71-.37a3 3 0 0 0 1.1 2.03c.5.4 1.2.13 1.2-.55v-2.4A8.7 8.7 0 0 0 22 12C22 6.5 17.5 2 12 2Z"/></svg></div>
+        <h3>Estilos visuales</h3>
+        <p>Compara distintos acabados antes de seleccionar uno.</p>
+      </div>
+      <div class="feat">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <h3>Voz y música</h3>
+        <p>Permite escuchar las opciones antes de elegir.</p>
+      </div>
+      <div class="feat">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor" stroke="none"/></svg></div>
+        <h3>Vídeo terminado</h3>
+        <p>Deja el resultado listo para reproducir o descargar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CÓMO FUNCIONA ===== -->
+<section style="background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Cómo funciona</span>
+      <h2 class="sec-title">Del tema al vídeo en cuatro pasos</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="rail"><span class="num">1</span></div>
+        <div><h3>Idea</h3><p>Define qué quieres contar.</p></div>
+      </div>
+      <div class="step">
+        <div class="rail"><span class="num">2</span></div>
+        <div><h3>Guion</h3><p>Revisa o edita el texto.</p></div>
+      </div>
+      <div class="step">
+        <div class="rail"><span class="num">3</span></div>
+        <div><h3>Estilo y voz</h3><p>Elige el acabado y la narración.</p></div>
+      </div>
+      <div class="step">
+        <div class="rail"><span class="num">4</span></div>
+        <div><h3>Vídeo</h3><p>Genera y descarga el archivo.</p></div>
+      </div>
+    </div>
+    <p class="process-note">El proceso está pensado para hacerse desde el móvil: primero se define el contenido, después se personaliza y, por último, se genera el archivo final.</p>
+  </div>
+</section>
+
+<!-- ===== RESULTADOS REALES ===== -->
+<section class="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Resultados reales</span>
+      <h2 class="sec-title">Vídeos creados con Lienzia</h2>
+      <p class="sec-sub">Estos dos vídeos completos en español muestran el resultado final en formato vertical y horizontal.</p>
+    </div>
+
+    <div class="vid-grid">
+      <article class="vid-card v">
+        <div class="vid-thumb">
+          <img src="img/video-vertical.jpg" alt="Vídeo vertical: ¿Qué es un agente de IA?">
+          <span class="vid-badge">Vertical · 9:16</span>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.9-6.86a1.05 1.05 0 0 0 0-1.76L9.56 4.26A1.04 1.04 0 0 0 8 5.14Z"/></svg></span>
+        </div>
+        <div class="vid-body">
+          <h3>¿Qué es un agente de IA?</h3>
+          <p class="desc">Una explicación visual de la diferencia entre responder una pregunta y actuar para cumplir un objetivo.</p>
+          <div class="vid-meta">
+            <span class="chip acc">58 s · Vertical 9:16</span>
+            <span class="chip">Cómic chibi · Voz Antonio</span>
+          </div>
+          <span class="vid-inc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Vídeo completo incluido</span>
+        </div>
+      </article>
+
+      <article class="vid-card h">
+        <div class="vid-thumb">
+          <img src="img/video-horizontal.jpg" alt="Vídeo horizontal: ¿Por qué la IA inventa respuestas?">
+          <span class="vid-badge">Horizontal · 16:9</span>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.9-6.86a1.05 1.05 0 0 0 0-1.76L9.56 4.26A1.04 1.04 0 0 0 8 5.14Z"/></svg></span>
+        </div>
+        <div class="vid-body">
+          <h3>¿Por qué la IA inventa respuestas?</h3>
+          <p class="desc">Explica por qué una respuesta fluida puede parecer fiable sin demostrar que sea verdadera.</p>
+          <div class="vid-meta">
+            <span class="chip acc">65 s · Horizontal 16:9</span>
+            <span class="chip">Línea semirrealista · Voz Sara</span>
+          </div>
+          <span class="vid-inc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Vídeo completo incluido</span>
+        </div>
+      </article>
+    </div>
+
+    <p class="results-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>
+      Los dos archivos MP4 se entregan junto a esta guía para poder reproducirlos completos.
+    </p>
+  </div>
+</section>
+
+<!-- ===== PASO UNO ===== -->
+<section class="paso">
+  <div class="wrap">
+    <div class="paso-grid">
+      <div class="paso-copy">
+        <span class="paso-badge">Paso <span class="step-n">01</span> · Prepara el contenido</span>
+        <h2>Escribe el tema y revisa el guion</h2>
+        <div class="item">
+          <span class="n">1</span>
+          <div>
+            <h3>Escribe el tema</h3>
+            <p>Describe qué quieres contar y elige una duración aproximada. Una frase clara es suficiente para empezar.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="n">2</span>
+          <div>
+            <h3>Revisa el guion</h3>
+            <p>La aplicación crea un primer borrador. Puedes regenerarlo, editarlo directamente o escribir tu propia versión.</p>
+          </div>
+        </div>
+        <div class="tip">
+          <span class="t-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>
+          <div>
+            <span class="t-badge">Consejo</span>
+            <p>Lee el guion completo antes de confirmarlo. Las ilustraciones, la voz y los subtítulos se preparan a partir de este texto.</p>
+          </div>
+        </div>
+      </div>
+      <div class="paso-media">
+        <div class="shot">
+          <div class="shot-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <img src="img/paso1-guion.jpg" alt="Tema y duración a la izquierda, guion editable a la derecha">
+        </div>
+        <p class="shot-cap">Tema y duración a la izquierda · Guion editable a la derecha</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PASO DOS ===== -->
+<section class="paso">
+  <div class="wrap">
+    <div class="paso-grid flip">
+      <div class="paso-copy">
+        <span class="paso-badge">Paso <span class="step-n">02</span> · Personaliza el vídeo</span>
+        <h2>Elige el formato y el estilo</h2>
+        <div class="item">
+          <span class="n">3</span>
+          <div>
+            <h3>Elige el formato y el estilo</h3>
+            <p>Usa Horizontal 16:9 para presentaciones y pantallas. Usa Vertical 9:16 para Reels, Shorts y TikTok. Después compara las vistas previas de los estilos.</p>
+          </div>
+        </div>
+        <div class="shot">
+          <div class="shot-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <img src="img/paso2-formato.jpg" alt="Selección del formato horizontal o vertical">
+        </div>
+        <p class="shot-cap">Selección del formato horizontal o vertical</p>
+      </div>
+      <div class="paso-media">
+        <div class="shot">
+          <div class="shot-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <img src="img/estilos.png" alt="Los seis estilos visuales disponibles">
+        </div>
+        <p class="shot-cap">Seis estilos visuales</p>
+      </div>
+    </div>
+
+    <div class="wrap-narrow" style="margin-top:44px">
+      <h3 style="font-size:20px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px">Seis estilos visuales</h3>
+      <p style="font-size:14.5px;color:var(--muted);margin-bottom:20px">Cada opción utiliza una composición, unos personajes y un acabado claramente diferentes.</p>
+      <div class="styles-grid">
+        <span class="style-tag"><span class="st-dot" style="background:#6C4DF6"></span>Cómic europeo moderno</span>
+        <span class="style-tag"><span class="st-dot" style="background:#FF5C7C"></span>Animación 2D limpia</span>
+        <span class="style-tag"><span class="st-dot" style="background:#2ED3A8"></span>Línea semirrealista</span>
+        <span class="style-tag"><span class="st-dot" style="background:#FFB84D"></span>Ilustración editorial</span>
+        <span class="style-tag"><span class="st-dot" style="background:#EF4266"></span>Cartel retro español</span>
+        <span class="style-tag"><span class="st-dot" style="background:#22D3EE"></span>Rotulador minimalista</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PASO TRES ===== -->
+<section class="paso">
+  <div class="wrap">
+    <div class="paso-grid">
+      <div class="paso-copy">
+        <span class="paso-badge">Paso <span class="step-n">03</span> · Completa y crea</span>
+        <h2>Escucha, crea y descarga el vídeo</h2>
+        <div class="item">
+          <span class="n">4</span>
+          <div>
+            <h3>Escucha la voz y la música</h3>
+            <p>Selecciona una voz en español y pulsa Escuchar. Haz lo mismo con la música o deja que la aplicación elija una pista al azar.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="n">5</span>
+          <div>
+            <h3>Pulsa Crear vídeo</h3>
+            <p>La aplicación organiza las escenas, prepara las ilustraciones y sincroniza la animación con la narración, los subtítulos y la música.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="n">6</span>
+          <div>
+            <h3>Reproduce o descarga</h3>
+            <p>Cuando el estado indique Listo, toca la portada o pulsa Reproducir. También puedes consultar el guion y descargar el archivo final.</p>
+          </div>
+        </div>
+      </div>
+      <div class="paso-media">
+        <div class="shot">
+          <div class="shot-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <img src="img/paso3-voz-musica.jpg" alt="Controles de voz y música">
+        </div>
+        <p class="shot-cap">Controles de voz y música</p>
+        <div class="shot" style="margin-top:24px">
+          <div class="shot-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+          <img src="img/ficha-final.png" alt="Ficha completa del vídeo y comprobaciones finales">
+        </div>
+        <p class="shot-cap">Ficha completa del vídeo y comprobaciones finales</p>
+      </div>
+    </div>
+
+    <div class="wrap-narrow" style="margin-top:44px">
+      <div class="checklist">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg> Antes de crear</h3>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Comprueba el tema, la duración y el guion.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Confirma el formato y el estilo visual.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Escucha la voz y la música.</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Espera al estado Listo antes de reproducir o descargar.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="cta-final">
+  <div class="wrap">
+    <h2>¿Listo para crear tu primer vídeo ilustrado?</h2>
+    <p>Convierte cualquier tema en un vídeo con narración, subtítulos y música en minutos.</p>
+    <button type="button" class="btn btn-primary" onclick="k2()">Probar Lienzia ahora</button>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-brand">
+      <img src="img/logo.jpg" alt="Lienzia">
+      <span>Lienzia</span>
+    </div>
+    <small>Guía rápida del producto · Vídeos ilustrados con IA</small>
+  </div>
+</footer>
+
+<script>
+  // Acción de los botones de llamada a la acción
+  function k2() {
+    window.location.href = 'https://www.qq.com/';
+  }
+</script>
+</body>
+</html>
